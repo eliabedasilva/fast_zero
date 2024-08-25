@@ -1,0 +1,8 @@
+.env
+.coverage
+alembic.ini
+database.db
+poetry.lock
+.ruff_cache/
+.pytest_cache/
+htmlcov/
