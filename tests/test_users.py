@@ -61,3 +61,11 @@ def test_delete_user(client, user, token):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.json() == {"message": "User deleted"}
+
+
+def test_delete_wrong_user(client, user, token, other_user):
+    response = client.delete(
+        f"/users/{other_user.id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.json() == {"detail": "Not enough permission"}

@@ -4,7 +4,7 @@ from http import HTTPStatus
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jwt import decode, encode
-from jwt.exceptions import PyJWTError
+from jwt.exceptions import PyJWTError, ExpiredSignatureError
 from pwdlib import PasswordHash
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -60,8 +60,12 @@ def get_current_user(
         session.scalar(select(User).where(User.email == username))
         if not username:
             raise credentials_exception
+        
+    except ExpiredSignatureError:
+        raise credentials_exception
     except PyJWTError:
         raise credentials_exception
+    
 
     user_db = session.scalar(select(User).where(User.email == username))
     if not user_db:
