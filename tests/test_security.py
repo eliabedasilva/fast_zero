@@ -1,11 +1,11 @@
 from jwt import decode
 
-from fast_zero.security import create_acess_token, settings
+from fast_zero.security import create_access_token, settings
 
 
 def test_jwt():
     data = {"sub": "teste@test.com"}
-    token = create_acess_token(data)
+    token = create_access_token(data)
 
     result = decode(
         token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
