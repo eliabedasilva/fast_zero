@@ -11,6 +11,8 @@ from fast_zero.database import get_session
 from fast_zero.models import Todo, TodoState, User, table_registry
 from fast_zero.security import get_password_hash
 
+from testcontainers.postgres import PostgresContainer
+
 
 class UserFactory(factory.Factory):
     class Meta:
@@ -31,7 +33,7 @@ class TodoFactory(factory.Factory):
     user_id = 1
 
 
-@pytest.fixture
+@pytest.fixture()
 def client(session):
     def get_session_override():
         return session
@@ -42,22 +44,25 @@ def client(session):
         app.dependency_overrides.clear()
 
 
-@pytest.fixture
-def session():
-    engine = create_engine(
-        "sqlite:///:memory",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
-    table_registry.metadata.create_all(engine)
+@pytest.fixture(scope='session')
+def engine():
+    with PostgresContainer('postgres:16', driver='psycopg') as postgres:
+        _engine = create_engine(postgres.get_connection_url())
+        with _engine.begin():
+            yield _engine
 
+
+@pytest.fixture()
+def session(engine):
+    table_registry.metadata.create_all(engine)
     with Session(engine) as session:
         yield session
+        session.rollback()
 
     table_registry.metadata.drop_all(engine)
 
 
-@pytest.fixture
+@pytest.fixture()
 def user(session):
     pwd = "teste123"
 
@@ -72,7 +77,7 @@ def user(session):
     return user
 
 
-@pytest.fixture
+@pytest.fixture()
 def other_user(session):
     user = UserFactory()
 
@@ -83,7 +88,7 @@ def other_user(session):
     return user
 
 
-@pytest.fixture
+@pytest.fixture()
 def token(client, user):
     response = client.post(
         "/auth/token",

@@ -154,7 +154,7 @@ def test_delete_todo_not_found(client, token):
     )
 
     assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {'detail': 'Task not Ftound.'}
+    assert response.json() == {'detail': 'Task not Found.'}
 
 
 def test_patch_todo(session, client, user, token):
