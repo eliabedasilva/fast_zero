@@ -27,6 +27,7 @@ jobs:
 
       - name: Instalar mais dependencias de maneira burra
         run: poetry add httpx
+        run: poetry add pydantic[email]
       
       - name: Executar testes
         run: poetry run pytest -x -v
