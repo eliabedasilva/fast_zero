@@ -19,6 +19,9 @@ jobs:
 
       - name: Instalar dependencias
         run: poetry install
+
+      - name: Instalar mais dependencias de maneira burra
+        run: pipx install httpx
       
       - name: Executar testes
         run: poetry run pytest -x -v
