@@ -21,7 +21,7 @@ jobs:
         run: poetry install
 
       - name: Instalar mais dependencias de maneira burra
-        run: pip install httpx
+        run: poetry add httpx
       
       - name: Executar testes
         run: poetry run pytest -x -v
