@@ -13,3 +13,6 @@ jobs:
       
       - name: Insalar Poetry
         run: pipx install poetry
+
+      - name: Instalar dependencias
+        run: poetry install
